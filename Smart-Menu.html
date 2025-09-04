@@ -1,0 +1,308 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Star Hotel</title>
+  <style>
+    :root{
+      --bg:#0a0a0a; --fg:#f8f8f8; --muted:#cfcfcf; --brand:#ffb703; --brand-2:#fb8500;
+      --card:#121212; --card-2:#171717; --accent:#1f2937; --ok:#16a34a; --bad:#ef4444;
+    }
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Roboto,Ubuntu,'Helvetica Neue',Arial,'Noto Sans',sans-serif;background:var(--bg);color:var(--fg);}
+    img{max-width:100%;display:block;border-radius:14px}
+    a{color:inherit}
+    .container{max-width:1200px;margin:0 auto;padding:0 16px}
+    .btn{appearance:none;border:0;border-radius:999px;padding:10px 16px;background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#111;font-weight:700;cursor:pointer;transition:transform .15s ease, box-shadow .15s ease}
+    .btn:hover{transform:translateY(-1px);box-shadow:0 8px 24px rgba(251,133,0,.35)}
+    .btn.ghost{background:transparent;border:1px solid #333;color:var(--fg)}
+    .section{padding:56px 0}
+
+    /* Hero */
+    .hero{position:relative;min-height:100vh;display:grid;place-items:center;}
+    .hero::before{content:"";position:absolute;inset:0;background:url('https://images.unsplash.com/photo-1549294413-26f195200c16?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8aG90ZWx8ZW58MHx8MHx8fDA%3D') center/cover no-repeat;filter:brightness(.55)}
+    .hero-inner{position:relative;text-align:center;padding:32px}
+    .title{font-size:clamp(36px,7vw,72px);line-height:1.05;margin:0 0 8px}
+    .subtitle{opacity:.8;margin:0 0 18px;font-weight:500}
+    .intro{max-width:760px;margin:0 auto;color:#e9e9e9;opacity:.95}
+    .intro p{margin:8px 0}
+
+    /* Section titles */
+    .h2{font-size:clamp(24px,4vw,36px);margin:0 0 18px}
+    .muted{color:var(--muted)}
+
+    /* Cards grid */
+    .grid{display:grid;gap:18px}
+    .grid.cards{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+    .card{background:linear-gradient(180deg,var(--card),var(--card-2));border:1px solid #222;border-radius:18px;padding:14px;display:flex;flex-direction:column;gap:10px;box-shadow:0 6px 18px rgba(0,0,0,.2)}
+    .card h3{margin:0;font-size:18px}
+    .price{font-weight:800}
+    .desc{color:var(--muted);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+    .card-actions{display:flex;gap:8px;align-items:center;justify-content:space-between}
+
+    /* Veg/Non-Veg picker */
+    .toggle{display:flex;gap:8px;background:#101010;border:1px solid #222;padding:6px;border-radius:999px;width:max-content}
+    .toggle .seg{padding:10px 16px;border-radius:999px;cursor:pointer}
+    .toggle .seg.active{background:linear-gradient(90deg,var(--brand),var(--brand-2));color:#111;font-weight:800}
+
+    /* Subcategory tabs */
+    .tabs{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 0}
+    .tab{border:1px solid #333;border-radius:999px;padding:8px 14px;cursor:pointer}
+    .tab.active{background:#222}
+
+    /* Header */
+    header{position:sticky;top:0;backdrop-filter:saturate(140%) blur(8px);background:rgba(10,10,10,.65);border-bottom:1px solid #1b1b1b;z-index:40}
+    header .row{display:flex;align-items:center;justify-content:space-between;padding:10px 0}
+
+    /* Cart */
+    .cart{position:fixed;right:16px;bottom:16px;background:#0f172a;border:1px solid #1e293b;border-radius:16px;min-width:260px;max-width:360px;box-shadow:0 14px 40px rgba(0,0,0,.45);z-index:50}
+    .cart header{position:relative;top:auto;background:transparent;border:0}
+    .cart .head{display:flex;align-items:center;justify-content:space-between;padding:12px 14px;border-bottom:1px solid #1e293b}
+    .cart .items{max-height:280px;overflow:auto;padding:8px}
+    .cart .item{display:grid;grid-template-columns:48px 1fr auto;gap:10px;align-items:center;padding:8px;border-radius:12px}
+    .cart .item:hover{background:#0b1220}
+    .qty{display:flex;align-items:center;gap:6px}
+    .qty button{width:26px;height:26px;border-radius:999px;border:1px solid #334155;background:#0b1220;color:#e5e7eb;cursor:pointer}
+    .cart .foot{display:grid;gap:8px;padding:12px 14px;border-top:1px solid #1e293b}
+
+    /* Footer */
+    footer{padding:24px 0;color:#9ca3af;text-align:center;border-top:1px solid #1b1b1b;margin-top:48px}
+  </style>
+</head>
+<body>
+  <header>
+    <div class="container row">
+      <div style="display:flex;align-items:center;gap:10px">
+        <div style="width:32px;height:32px;border-radius:8px;background:linear-gradient(45deg,var(--brand),var(--brand-2))"></div>
+        <strong>Star Hotel</strong>
+      </div>
+      <nav style="display:flex;gap:14px;align-items:center">
+        <a href="#specials" class="muted">Our Specials</a>
+        <a href="#todays" class="muted">Today's Specials</a>
+        <a href="#menu" class="muted">Menu</a>
+      </nav>
+    </div>
+  </header>
+
+  <section class="hero" id="home">
+    <div class="hero-inner container">
+      <h1 class="title">Welcome to Star Hotel</h1>
+      <p class="subtitle">12, Seaside Boulevard, Vizag, Andhra Pradesh – 530002</p>
+      <div class="intro">
+        <p>Where coastal charm meets contemporary luxury.</p>
+        <p>Experience thoughtfully designed rooms with sweeping sea views.</p>
+        <p>Our award‑winning chefs craft global flavors with local produce.</p>
+        <p>Unwind at the infinity pool, spa, and moonlit rooftop lounge.</p>
+        <p>We promise warm hospitality and unforgettable dining.</p>
+      </div>
+      <div style="margin-top:18px"><a href="#specials" class="btn">Explore Menu</a></div>
+    </div>
+  </section>
+
+  <section class="section" id="specials">
+    <div class="container">
+      <h2 class="h2">Our Special Dishes</h2>
+      <div class="grid cards" id="specialsGrid"></div>
+    </div>
+  </section>
+
+  <section class="section" id="todays">
+    <div class="container">
+      <h2 class="h2">Today's Specials</h2>
+      <div class="grid cards" id="todaysGrid"></div>
+    </div>
+  </section>
+
+  <section class="section" id="menu">
+    <div class="container">
+      <h2 class="h2">Choose Your Preference</h2>
+      <div class="toggle" id="vegToggle">
+        <div class="seg active" data-type="veg">Veg</div>
+        <div class="seg" data-type="nonveg">Non‑Veg</div>
+      </div>
+      <div class="tabs" id="subTabs"></div>
+      <div class="grid cards" id="menuGrid" style="margin-top:12px"></div>
+    </div>
+  </section>
+
+  <div class="cart" id="cart">
+    <div class="head">
+      <strong>Cart</strong>
+      <span id="cartCount" class="muted">0 items</span>
+    </div>
+    <div class="items" id="cartItems"></div>
+    <div class="foot">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <span>Total</span>
+        <strong id="cartTotal">₹0.00</strong>
+      </div>
+      <button class="btn" id="checkout">Checkout</button>
+    </div>
+  </div>
+
+  <footer>
+    <div class="container">© <span id="yr"></span> Star Hotel. All rights reserved.</div>
+  </footer>
+
+  <script>
+    const currency = (n) => `₹${n.toFixed(2)}`;
+
+    const specials = [
+      {id:'sp1', name:'Truffle Mushroom Risotto', price:699, img:'https://images.unsplash.com/photo-1482049016688-2d3e1b311543?q=80&w=710&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Creamy Arborio rice folded with wild mushrooms, white truffle oil, and shaved parmesan. Comforting, rich, and aromatic.'},
+      {id:'sp2', name:'Tandoori Chicken Tikka', price:449, img:'https://images.unsplash.com/photo-1727280376746-b89107a5b0df?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8dGFuZG9vcmklMjBjaGlja2VufGVufDB8fDB8fHww', desc:'Char-grilled cottage cheese marinated in hung curd and spices. Smoky edges with a soft, melty center.'},
+      {id:'sp3', name:'Classic Margherita Pizza', price:529, img:'https://images.unsplash.com/photo-1541745537411-b8046dc6d66c?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjl8fHBpenphfGVufDB8fDB8fHww', desc:'San Marzano tomato base, fresh basil leaves, and gooey mozzarella on a hand-stretched crust.'},
+      {id:'sp4', name:'Chicken Biryani', price:599, img:'https://images.unsplash.com/photo-1701579231305-d84d8af9a3fd?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y2hpY2tlbiUyMGJpcnlhbml8ZW58MHx8MHx8fDA%3D', desc:'Tender chicken simmered in a velvety tomato-butter gravy. Mild heat, maximum indulgence.'},
+      {id:'sp5', name:'Blueberry Cheesecake', price:349, img:'https://media.istockphoto.com/id/1295410046/photo/blueberry-cheesecake.webp?a=1&b=1&s=612x612&w=0&k=20&c=Ma2I82tVtg9_9DsPB7QB5a-GFW3u2AiIU8N16vyo0Sg=', desc:'Silky cream-cheese mousse on a buttery biscuit base, topped with slow-cooked blueberry compote.'},
+      {id:'sp6', name:'Panner Salad Rice', price:599, img:'https://images.unsplash.com/photo-1588166524941-3bf61a9c41db?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dmVnZXRhcmlhbiUyMGZvb2R8ZW58MHx8MHx8fDA%3D', desc:'Specialized Panner from pure Cured with all types of vegetable salad with pure non-polished Rice...s'},
+      {id:'sp7', name:'Veg Salad Bowl', price:499, img:'https://plus.unsplash.com/premium_photo-1673590981774-d9f534e0c617?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dmVnZXRhcmlhbiUyMGZvb2R8ZW58MHx8MHx8fDA%3D', desc:'Salad bowl with special fruits and vegetabls mixed in deep with salad that contains the freshly baked items'},
+       {id:'sp8', name:'Shahi Panner Rice', price:599, img:'https://plus.unsplash.com/premium_photo-1694860348177-4ef64cf04422?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mzl8fHZlZ2V0YXJpYW4lMjBmb29kfGVufDB8fDB8fHww', desc:'Shahi Panner with indian flavours and cream formation of the rice with water added minerals'},
+
+    ];
+
+    const todays = [
+      {id:'td1', name:'Pesto Grilled Sandwich', price:259, img:'https://plus.unsplash.com/premium_photo-1700581633173-2d672f522636?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MzV8fGdyaWxsZWQlMjBzYW5kd2ljaHxlbnwwfHwwfHx8MA%3D%3D', desc:'House pesto, fresh tomatoes, and mozzarella pressed between artisanal bread. Crunchy outside, melty inside.'},
+      {id:'td2', name:'Chicken Biryani', price:399, img:'https://images.unsplash.com/photo-1589302168068-964664d93dc0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8Y2hpY2tlbiUyMGJpcnlhbml8ZW58MHx8MHx8fDA%3D', desc:'Fragrant basmati rice layered with succulent chicken and spices. Served with raita and salan.'},
+      {id:'td3', name:'Virgin Mojito', price:179, img:'https://images.unsplash.com/photo-1659046842567-2787b5c9c2fe?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bW9qaXRvJTIwY29ja3RhaWx8ZW58MHx8MHx8fDA%3D', desc:'Fresh mint, lime, and fizz for a perfectly chilled pick-me-up. Zero alcohol, full refreshment.'},
+      {id:'td4', name:'Gulab Jamun', price:149, img:'https://images.unsplash.com/photo-1616995797463-9e67aa01bc7a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fGluZGlhbiUyMHN3ZWV0c3xlbnwwfHwwfHx8MA%3D%3D', desc:'Warm milk-solid dumplings soaked in rose-cardamom syrup. A timeless Indian dessert.'},
+      {id:'td5', name:'Smoked BBQ Wings', price:329, img:'https://images.unsplash.com/photo-1555939594-58d7cb561ad1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8Zm9vZHxlbnwwfHwwfHx8MA%3D%3D', desc:'Slow-smoked, sticky, and finger-licking good with our house BBQ glaze.'},
+      {id:'td6', name:'Spicy Indian Style Paneer Soup', price:589, img:'https://images.unsplash.com/photo-1604152135912-04a022e23696?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8c291cHN8ZW58MHx8MHx8fDA%3D', desc:'Flavored with gingeand garlic and green chilies and black pepper and Indians.'},
+      {id:'td7', name:'Special Paneer Curry with Naan', price:599, img:'https://images.unsplash.com/photo-1701579231378-3726490a407b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8cGFuZWVyfGVufDB8fDB8fHww', desc:'rich, creamy, and full of North Indian flavors – perfect for a restaurant-style dinner at home..'},
+      {id:'td8', name:'All Mix Mandi', price:1099, img:'https://images.unsplash.com/photo-1697276063790-a68a966b12f7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8bXV0dG9uJTIwYmlyeWFuaXxlbnwwfHwwfHx8MA%3D%3D', desc:'All Mix Mandi is a grand and flavorful Arabian rice dish that features a variety of meats served over fragrant spiced rice...'}
+
+
+
+
+
+    ];
+
+    const vegMenu = {
+      'Starters':[ {id:'v-st-1', name:'Hara Bhara Kebab', price:249, img:'https://images.unsplash.com/photo-1612929633738-8fe44f7ec841?q=80&w=1200&auto=format&fit=crop', desc:'Spinach, peas, and herbs pan-seared to perfection. Crisp edges, tender core.'}, {id:'v-st-2', name:'Tomato Basil Soup', price:199, img:'https://images.unsplash.com/photo-1603105037880-880cd4edfb0d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OXx8c291cHxlbnwwfHwwfHx8MA%3D%3D', desc:'Slow-roasted tomatoes and fresh basil blended creamy and smooth.'},{id:'v-st-3', name:'Aloo Tikki cheese pizza', price:299, img:'https://images.unsplash.com/photo-1604917869287-3ae73c77e227?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OHx8dmVnJTIwZm9vZHxlbnwwfHwwfHx8MA%3D%3D', desc:'Spiced potato patties, shallow-fried until crisp and Topped with chutneys, onions, and sev (optional for chaat style)..'},{id:'v-st-4', name:'Veg Seekh Kebabs', price:399, img:'https://images.unsplash.com/photo-1599122759357-66745a5c36ce?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NDV8fHZlZyUyMGZvb2R8ZW58MHx8MHx8fDA%3D', desc:'Spiced veggie and paneer mixture shaped on skewers and grilled or baked and Served with green chutney.'}],
+      'Main Course':[ {id:'v-mc-1', name:'Palak Paneer', price:329, img:'https://images.unsplash.com/photo-1703080243677-00d841efa454?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Njd8fHZlZyUyMGZvb2R8ZW58MHx8MHx8fDA%3D', desc:'Cottage cheese in a velvety spinach gravy with garlic tempering.'}, {id:'v-mc-2', name:'Veg Handi', price:319, img:'https://images.unsplash.com/photo-1742281258189-3b933879867a?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8OTl8fHZlZyUyMGZvb2R8ZW58MHx8MHx8fDA%3D', desc:'Seasonal veggies tossed in a rich, creamy tomato-onion base and fiiled with falvours and curriesss.'},{id:'v-mc-3', name:'Meals', price:299, img:'https://images.unsplash.com/photo-1720949579208-70855e23dfc3?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTE1fHx2ZWclMjBmb29kfGVufDB8fDB8fHww', desc:'Veg Plain Rice is a mild and simple rice dish made by cooking rice with a few basic vegetables and minimal spices. It’s light, nutritious, and serves as a perfect base for flavorful curries, dals, or gravies.'},{id:'v-mc-4', name:'Garden Glory Veg Bowl', price:599, img:'https://images.unsplash.com/photo-1751890893842-7807b463b344?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Mjc0fHx2ZWclMjBmb29kfGVufDB8fDB8fHww', desc:'A colorful, wholesome bowl packed with the goodness of seasonal vegetables, fluffy basmati rice (or quinoa), and a medley of flavors that satisfy both the heart and the appetite. Each bowl is a vibrant celebration of health and taste.'}],
+      'Drinks':[ {id:'v-dr-1', name:'Mango Lassi', price:299, img:'https://images.unsplash.com/photo-1623065422902-30a2d299bbe4?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8bWFuZ28lMjBsYXNzaXxlbnwwfHwwfHx8MA%3D%3D', desc:'Sweetened yogurt shake blended with Alphonso mango pulp.'}, {id:'v-dr-2', name:'Classic Lemonade', price:399, img:'https://images.unsplash.com/photo-1523677011781-c91d1bbe2f9e?q=80&w=693&auto=format&fit=crop&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D', desc:'Fresh-squeezed lemons, a hint of sugar, topped with soda.'},{id:'v-dr-3', name:'Classic, Creamy & Irresistibly Chocolatey!', price:399, img:'https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWlsa3NoYWtlfGVufDB8fDB8fHww', desc:'Indulge in the rich, velvety goodness of our Chocolate Milkshake, made with premium cocoa or real chocolate syrup, chilled milk, and creamy ice cream.'},{id:'v-dr-3', name:'Fresh, Fruity & Pretty in Pink!', price:399, img:'https://plus.unsplash.com/premium_photo-1695927470038-35a215e794f0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1pbGtzaGFrZXxlbnwwfHwwfHx8MA%3D%3D', desc:'Bursting with the sweet-tangy flavor of ripe strawberries, our Strawberry Milkshake is a refreshing blend of fresh (or real pulp) strawberries, cold milk, and a scoop of vanilla or strawberry ice cream.'}],
+      'Desserts':[ {id:'v-de-1', name:'Rasmalai', price:179, img:'https://plus.unsplash.com/premium_photo-1672192165925-aad4313289c1?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8ZGVzZXJ0cyUyMGZvb2R8ZW58MHx8MHx8fDA%3D', desc:'Soft paneer patties soaked in saffron-cardamom milk and with added sweetness of flavours.'}, {id:'v-de-2', name:'Fruit Custard', price:159, img:'https://plus.unsplash.com/premium_photo-1671598774000-70eb0f85f58f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8ZGVzZXJ0cyUyMGZvb2R8ZW58MHx8MHx8fDA%3D', desc:'Chilled vanilla custard with seasonal fruits and some baked flour with added flavourss.'},{id:'v-de-3', name:'Classic German Delight with a Decadent Twist', price:699, img:'https://images.unsplash.com/photo-1622494828558-d3614f72b67e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fGRlc2VydHMlMjBmb29kfGVufDB8fDB8fHww', desc:'Our Deluxe Black Forest Cake is a timeless beauty, reimagined for the ultimate indulgence. Layers of moist chocolate sponge cake are soaked in cherry syrup and stacked with fluffy whipped cream, juicy black cherries, and a surprise crunch of dark chocolate shavings and choco chips between the layers.'},{id:'v-de-4', name:'Soft, Smooth, and Seductively Sweet', price:759, img:'https://plus.unsplash.com/premium_photo-1672192165220-0ea3443e448b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjB8fGRlc2VydHMlMjBmb29kfGVufDB8fDB8fHww', desc:'Fall in love with every bite of our Velvet Dream Cake – a luxurious Red Velvet cake layered with smooth, tangy cream cheese frosting. The cake is incredibly soft, with a subtle cocoa flavor and vibrant red hue that makes it a showstopper.s'}]
+    };
+
+    const nonVegMenu = {
+      'Starters':[ {id:'n-st-1', name:'Chicken Tikka', price:319, img:'https://plus.unsplash.com/premium_photo-1692835633672-50919fdffb75?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8Nnx8Y2hpY2tlbiUyMHRpa2thJTIwbWFzYWxhfGVufDB8fDB8fHww', desc:'Juicy chicken cubes char-grilled in a spiced yogurt marinade.'}, {id:'n-st-2', name:'Fish Fingers', price:299, img:'https://images.unsplash.com/photo-1601314002592-b8734bca6604?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTV8fGZpc2glMjBmb29kfGVufDB8fDB8fHww', desc:'Crispy breaded fish served with tartar dip and lemon.'},{id:'n-st-3', name:'Prawn Koliwada', price:599, img:'https://plus.unsplash.com/premium_photo-1669261882795-4d17baa133e3?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjR8fG5vbiUyMHZlZ3xlbnwwfHwwfHx8MA%3D%3D', desc:'Crispy-fried prawns in a spicy gram flour batter, inspired by Mumbai’s Koliwada community and Crisp, zesty, and utterly addictive..'},{id:'n-st-4', name:'Pepper Chicken Fry', price:599, img:'https://plus.unsplash.com/premium_photo-1669260111383-3dd8e9c73b29?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjJ8fG5vbiUyMHZlZ3xlbnwwfHwwfHx8MA%3D%3D', desc:'Crispy-fried prawns in a spicy gram flour batter, inspired by Mumbai’s Koliwada community and Crisp, zesty, and utterly addictive..'}],
+      'Main Course':[ {id:'n-mc-1', name:'Mutton Rogan Josh', price:449, img:'https://images.unsplash.com/photo-1691171047294-bf039a943700?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTF8fG11dHRvbiUyMGJpcnlhbml8ZW58MHx8MHx8fDA%3D', desc:'Slow-cooked lamb in Kashmiri red gravy, aromatic and hearty and enjoying the customer with satisfaction.'}, {id:'n-mc-2', name:'Grilled Chicken Steak', price:399, img:'https://images.unsplash.com/photo-1691170979035-27e5ec943205?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTd8fG11dHRvbiUyMGJpcnlhbml8ZW58MHx8MHx8fDA%3D', desc:'Herb-marinated chicken breast with buttered veg and pepper and flavoured rice with just boiled water....'},{id:'n-mc-3', name:'Hyderabadi Chicken Biryani', price:299, img:'https://images.unsplash.com/photo-1701579231349-d7459c40919d?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8YmlyeWFuaXxlbnwwfHwwfHx8MA%3D%3D', desc:'Marinated chicken is layered with partially cooked basmati rice, fried onions, mint, and saffron. A royal dish known for its bold flavors and signature smokiness.....'},{id:'n-mc-4', name:'Afghani Biryani', price:499, img:'https://plus.unsplash.com/premium_photo-1695456065067-45cabcf25e8f?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8ODB8fGJpcnlhbml8ZW58MHx8MHx8fDA%3D', desc:'A milder biryani with cream, cashews, and dried fruits, often paired with grilled chicken and More aromatic than spicy, with a royal touch suited for those who enjoy richer flavors.'}],
+      'Drinks':[ {id:'n-dr-1', name:'Mint Lime Cooler', price:159, img:'https://plus.unsplash.com/premium_photo-1721780793069-5576631f1b46?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTA4fHxtaW50JTIwbGltZSUyMGNvb2xlcnxlbnwwfHwwfHx8MA%3D%3D', desc:'Icy lime soda muddled with garden-fresh mint and lemons with fully added swetness of the flours.'}, {id:'n-dr-2', name:'Cold Coffee', price:169, img:'https://images.unsplash.com/photo-1530373239216-42518e6b4063?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8M3x8Y29sZCUyMGNvZmZlZXxlbnwwfHwwfHx8MA%3D%3D', desc:'Cafe-style chilled coffee with a creamy head and shakes flavour with the coffe beans added in it......ss'},{id:'v-dr-3', name:'Classic, Creamy & Irresistibly Chocolatey!', price:399, img:'https://images.unsplash.com/photo-1577805947697-89e18249d767?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NHx8bWlsa3NoYWtlfGVufDB8fDB8fHww', desc:'Indulge in the rich, velvety goodness of our Chocolate Milkshake, made with premium cocoa or real chocolate syrup, chilled milk, and creamy ice cream.'},{id:'v-dr-3', name:'Fresh, Fruity & Pretty in Pink!', price:399, img:'https://plus.unsplash.com/premium_photo-1695927470038-35a215e794f0?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTB8fG1pbGtzaGFrZXxlbnwwfHwwfHx8MA%3D%3D', desc:'Bursting with the sweet-tangy flavor of ripe strawberries, our Strawberry Milkshake is a refreshing blend of fresh (or real pulp) strawberries, cold milk, and a scoop of vanilla or strawberry ice cream.'}],
+      'Desserts':[ {id:'n-de-1', name:'Brownie with Ice Cream', price:189, img:'https://plus.unsplash.com/premium_photo-1675706599329-1bae6e5b36e7?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTc2fHxkZXNlcnRzJTIwZm9vZHxlbnwwfHwwfHx8MA%3D%3D', desc:'Warm chocolate brownie topped with vanilla ice cream and with the gems with the flaours.'}, {id:'n-de-2', name:'Caramel Custard', price:169, img:'https://images.unsplash.com/photo-1630301786766-70c27110f563?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MTIyfHxkZXNlcnRzJTIwZm9vZHxlbnwwfHwwfHx8MA%3D%3D', desc:'Silky baked custard crowned with golden caramel and with the flavour of dark chocolate.'},{id:'v-de-3', name:'Classic German Delight with a Decadent Twist', price:699, img:'https://images.unsplash.com/photo-1622494828558-d3614f72b67e?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MjF8fGRlc2VydHMlMjBmb29kfGVufDB8fDB8fHww', desc:'Our Deluxe Black Forest Cake is a timeless beauty, reimagined for the ultimate indulgence. Layers of moist chocolate sponge cake are soaked in cherry syrup and stacked with fluffy whipped cream, juicy black cherries, and a surprise crunch of dark chocolate shavings and choco chips between the layers.'},{id:'v-de-4', name:'Soft, Smooth, and Seductively Sweet', price:759, img:'https://plus.unsplash.com/premium_photo-1672192165220-0ea3443e448b?w=600&auto=format&fit=crop&q=60&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NjB8fGRlc2VydHMlMjBmb29kfGVufDB8fDB8fHww', desc:'Fall in love with every bite of our Velvet Dream Cake – a luxurious Red Velvet cake layered with smooth, tangy cream cheese frosting. The cake is incredibly soft, with a subtle cocoa flavor and vibrant red hue that makes it a showstopper.s'}]
+    };
+
+    const cart = new Map();
+
+    function renderCard(d){
+      const wrap = document.createElement('div');
+      wrap.className = 'card';
+      wrap.innerHTML = `
+        <img loading="lazy" src="${d.img}" alt="${d.name}">
+        <h3>${d.name}</h3>
+        <div class="muted desc">${d.desc}</div>
+        <div class="card-actions">
+          <span class="price">${currency(d.price)}</span>
+          <button class="btn" data-add="${d.id}">Add to Cart</button>
+        </div>`;
+      wrap.querySelector('[data-add]').addEventListener('click',()=>addToCart(d));
+      return wrap;
+    }
+
+    function renderGrid(el, list){
+      el.innerHTML = '';
+      list.forEach(item=> el.appendChild(renderCard(item)) );
+    }
+
+    function addToCart(item){
+      const entry = cart.get(item.id) || {...item, qty:0};
+      entry.qty += 1; cart.set(item.id, entry);
+      drawCart();
+    }
+    function changeQty(id,delta){
+      const entry = cart.get(id); if(!entry) return;
+      entry.qty += delta; if(entry.qty<=0){ cart.delete(id); } else { cart.set(id,entry); }
+      drawCart();
+    }
+    function drawCart(){
+      const itemsEl = document.getElementById('cartItems');
+      itemsEl.innerHTML='';
+      let count=0,total=0;
+      for(const it of cart.values()){
+        count += it.qty; total += it.qty*it.price;
+        const row = document.createElement('div');
+        row.className='item';
+        row.innerHTML = `
+          <img src="${it.img}" alt="${it.name}" width="48" height="48" style="object-fit:cover;border-radius:10px">
+          <div>
+            <div style="font-weight:700">${it.name}</div>
+            <div class="muted">${currency(it.price)}</div>
+          </div>
+          <div class="qty">
+            <button aria-label="decrease" data-dec="${it.id}">-</button>
+            <span>${it.qty}</span>
+            <button aria-label="increase" data-inc="${it.id}">+</button>
+          </div>`;
+        row.querySelector('[data-dec]').onclick = ()=>changeQty(it.id,-1);
+        row.querySelector('[data-inc]').onclick = ()=>changeQty(it.id, 1);
+        itemsEl.appendChild(row);
+      }
+      document.getElementById('cartCount').textContent = `${count} item${count!==1?'s':''}`;
+      document.getElementById('cartTotal').textContent = currency(total);
+    }
+
+    // Specials sections
+    renderGrid(document.getElementById('specialsGrid'), specials);
+    renderGrid(document.getElementById('todaysGrid'), todays);
+
+    // Veg / Non-Veg + Tabs
+    const toggle = document.getElementById('vegToggle');
+    const subTabs = document.getElementById('subTabs');
+    const menuGrid = document.getElementById('menuGrid');
+
+    let mode = 'veg';
+    let activeTab = 'Starters';
+
+    function drawTabs(){
+      subTabs.innerHTML='';
+      const data = mode==='veg'?vegMenu:nonVegMenu;
+      Object.keys(data).forEach(key=>{
+        const t = document.createElement('button');
+        t.className = 'tab'+(key===activeTab?' active':'');
+        t.textContent = key;
+        t.addEventListener('click',()=>{ activeTab = key; drawTabs(); drawMenu(); });
+        subTabs.appendChild(t);
+      });
+    }
+    function drawMenu(){
+      const data = mode==='veg'?vegMenu:nonVegMenu;
+      renderGrid(menuGrid, data[activeTab]||[]);
+    }
+
+    toggle.querySelectorAll('.seg').forEach(seg=>{
+      seg.addEventListener('click',()=>{
+        toggle.querySelectorAll('.seg').forEach(s=>s.classList.remove('active'));
+        seg.classList.add('active');
+        mode = seg.dataset.type;
+        activeTab = 'Starters';
+        drawTabs();
+        drawMenu();
+      });
+    });
+
+    drawTabs();
+    drawMenu();
+
+    // Footer year
+    document.getElementById('yr').textContent = new Date().getFullYear();
+
+    // Checkout
+    document.getElementById('checkout').addEventListener('click',()=>{
+      if(cart.size===0){ alert('Your cart is empty.'); return; }
+      const summary = [...cart.values()].map(x=>`${x.qty} × ${x.name}`).join('\n');
+      alert('Thank you! Order received.\n\n'+summary+`\n\nTotal: ${document.getElementById('cartTotal').textContent}`);
+      cart.clear();
+      drawCart();
+    });
+  </script>
+</body>
+</html>
